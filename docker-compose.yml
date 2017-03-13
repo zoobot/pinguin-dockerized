@@ -1,0 +1,29 @@
+version: '2'
+services:
+  db:
+    image: mysql:3.2
+    restart: always
+    volumes:
+    - ./db:/data/db
+    links:
+    - node
+  server:
+    build: .
+    command: node server.js
+    restart: always
+    ports:
+    - "3000:3000"
+    volumes:
+    - .:/app
+    links:
+    - db
+    - react
+  react:
+    build: ./nginx
+    restart: always
+    ports:
+    - "8080:80"
+    links:
+    - server
+    volumes_from:
+    - db
